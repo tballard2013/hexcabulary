@@ -11,3 +11,10 @@ TODO:
 - [ ] Win/Lose system
 - [ ] Hide algorithms
 - [ ] ...what else?
+
+
+
+2/21/21 - 
+    broke out single hex shape as svg
+    broke out board, style css, and javascript to generate matrix
+    added play button

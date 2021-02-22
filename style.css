@@ -1,0 +1,23 @@
+.cell {
+    background-image: url(assets/hex.svg);
+    background-repeat: no-repeat;
+    background-size: 100px 100px;
+    background-position: center;
+    outline: 1px red dotted;
+    width: 100px;
+    height: 70px;
+    display: flex;
+    padding: 0;
+    margin: 0;
+    text-align: bottom;
+    position: absolute;;
+}
+.board {
+    position: relative;
+    top: 0px;
+    right: 0px;
+    opacity: 0.8;
+    width: 800px;
+    height: 600px;
+    outline: 2px #000 solid;
+}
