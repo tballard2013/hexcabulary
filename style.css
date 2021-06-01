@@ -1,5 +1,5 @@
 .cell {
-    background-image: url(assets/hex.svg);
+    xxx-background-image: url(assets/hex.svg);
     background-repeat: no-repeat;
     background-size: 100px 100px;
     background-position: center;
@@ -9,15 +9,21 @@
     display: flex;
     padding: 0;
     margin: 0;
-    text-align: bottom;
-    position: absolute;;
+    position: absolute;
+    align-items: center;
+    justify-content: center;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    font-size: 2em;
+    font-weight: bold;
+    color: #333;
 }
+
 .board {
     position: relative;
     top: 0px;
     right: 0px;
     opacity: 0.8;
-    width: 800px;
+    width: fit-content(); /* 800px; */
     height: 600px;
     outline: 2px #000 solid;
 }
