@@ -1,11 +1,11 @@
+body {
+    padding: 0; margin: 0;
+}
+
 .cell {
-    xxx-background-image: url(assets/hex.svg);
+    /* see also javascript generated sizing */
     background-repeat: no-repeat;
-    background-size: 100px 100px;
     background-position: center;
-    outline: 1px red dotted;
-    width: 100px;
-    height: 70px;
     display: flex;
     padding: 0;
     margin: 0;
@@ -13,7 +13,6 @@
     align-items: center;
     justify-content: center;
     font-family: Verdana, Geneva, Tahoma, sans-serif;
-    font-size: 2em;
     font-weight: bold;
     color: #333;
 }
@@ -23,7 +22,28 @@
     top: 0px;
     right: 0px;
     opacity: 0.8;
-    width: fit-content(); /* 800px; */
-    height: 600px;
-    outline: 2px #000 solid;
+    width: 100vw;
+    height: 100vh;
+    background: #999;
+
+    /* prevent highlighting text selection */
+    user-select: none; /* supported by Chrome and Opera */
+    -webkit-user-select: none; /* Safari */
+    -khtml-user-select: none; /* Konqueror HTML */
+    -moz-user-select: none; /* Firefox */
+    -ms-user-select: none; /* Internet Explorer/Edge */
+}
+
+.clicked {
+    /* see also javascript generated class */
+} 
+.clicked * {
+    color: #fff;
+}
+
+.click-zone {
+    cursor: pointer;
+    x-background: red; /* debug */
+    padding: 4px 16px;
+    z-index: 9999;
 }

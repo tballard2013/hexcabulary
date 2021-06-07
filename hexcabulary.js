@@ -1,11 +1,13 @@
+const size = 80;
+const unit = 'px';
+
 handleClick = (ev) => {
     console.log('event = ', ev);
     let bk = svg("rgb(0,0,0)");
-    let el = ev.srcElement;
+    let el = ev.srcElement.parentNode;
+    
     console.log('bk=', bk);
     el.classList.toggle('clicked');
-    // el.style.backgroundImage = bk;
-    // ev
 }
 
 generateCSSClasses = () => {
@@ -13,13 +15,17 @@ generateCSSClasses = () => {
     let style = document.createElement('style');
     // style.type = 'text/css';
     style.innerHTML = `
-    .cell {
-        background-image: ${svg()};
-    }
-    .clicked {
-        color: #fff;
-        background-image: ${svg("rgb(0,0,0)")};
-    }
+        .cell {
+            background-image: ${svg()};
+            background-size: ${size}${unit} ${size}${unit};
+            width: ${size}${unit};
+            height:${size}${unit};
+            font-size: ${size * .02}em;
+        }
+        .clicked {
+            color: #fff;
+            background-image: ${svg("rgb(0,0,0)")};
+        }
     `;
     document.getElementsByTagName('head')[0].appendChild(style);
 }
@@ -27,9 +33,12 @@ generateCSSClasses = () => {
 drawBoard = () => {
     let html = '';
     let y = 0, x = 0;
-    let xx = 94, yy = 49;
+    // let xx = 94, yy = 49;
+    let xx = size - 6;
+    let yy = size / 2 - 2;
     let styles = document.styleSheets[0];
     console.log('styles = ', styles);
+    let data = {};
     
     for (let rows = 10; rows > 0; rows--) {
         x = rows % 2 ? 0 : (0 + xx / 2)
@@ -38,19 +47,24 @@ drawBoard = () => {
             let letter = randomLetter();
             html += `
                 <div 
-                    onclick="handleClick(event)"
-                    _nmouseover="this.style.backgroundImage = ${svg(`rgb('255,0,0')`)}"
                     class="cell" 
-                    style="top: ${y}px; left: ${x}px;
-                    "
-                >
-                ${letter}
-                </div>
+                    id="cell-${columns},R${rows}"
+                    style="top: ${y}px; left: ${x}px;"
+                ><div class="click-zone"
+                    onclick="handleClick(event)"
+                >${letter}</div
+                ></div>
             `;
+            data[`cell-${columns},${rows}`] = {
+                letter: letter,
+                // TODO: is this part of a word?
+            }
         }
         y += yy;
     }
     console.log('html = ', html);
+    console.log('data = ', JSON.stringify(data, 4, null));
+    // html = `<div style="position:relative; left: -5%; outline: 1px red solid;">${html}</div>`;
     document.querySelector('#board').innerHTML = html;
 }
 
