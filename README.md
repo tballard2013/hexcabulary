@@ -5,11 +5,13 @@
 I've been wanting to create a word search game using a hexagonal matrix for years--this is a stab at progressing that intent to the next waypoint in its journey.
 
 TODO:
-- [ ] Matrix
+- [X] Matrix
 - [ ] Rudimentary example list
 - [ ] UI/IO
 - [ ] Win/Lose system
 - [ ] Hide algorithms
+- [X] Edit/Play mode toggle
+- [X] Export game board data (to use in your own custom game instance)
 - [ ] ...what else?
 
 
@@ -18,6 +20,13 @@ TODO:
     broke out single hex shape as svg
     broke out board, style css, and javascript to generate matrix
     added play button
+
+8/22/21 - 
+    convert legacy JS approach to ES class approach
+    support passing instance, container, and game board data to constructor
+    add play bar buttons
+    edit mode to allow user to modify the letters in the grid visually
+    export game board data feature
 
 
 Steps to build the project. 
