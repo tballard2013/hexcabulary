@@ -3,6 +3,54 @@
     padding: 0;
     box-sizing: border-box;
 }
+
+.paused .click-zone,
+.paused .cell,
+.paused {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.cell {
+    /* see also javascript generated sizing */
+    background-repeat: no-repeat;
+    background-position: center;
+    display: flex;
+    padding: 0;
+    margin: 0;
+    position: absolute;
+    align-items: center;
+    justify-content: center;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    font-weight: bold;
+    color: #333;
+}
+
+.board {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    background: #999;
+
+    /* prevent highlighting text selection */
+    user-select: none; /* supported by Chrome and Opera */
+    -webkit-user-select: none; /* Safari */
+    -khtml-user-select: none; /* Konqueror HTML */
+    -moz-user-select: none; /* Firefox */
+    -ms-user-select: none; /* Internet Explorer/Edge */
+}
+
+.clicked * {
+    color: #fff;
+}
+
+.click-zone {
+    cursor: pointer;
+    padding: 4px 16px;
+    z-index: 9999;
+}
+
+
 .playbar {
     color: #fff;
     padding: 2em;
@@ -21,9 +69,7 @@
     min-width: 100px;
     margin: 4px;
 }
-.paused {
-    opacity: 0.3;
-}
+
 .edit-mode,
 .playbar button.edit-mode {
     background-color: orange;
