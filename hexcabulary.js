@@ -2,12 +2,14 @@ import { svg } from './hex-library/svg.js';
 import { addMenu } from './hex-library/add-menu.js';
 import { generateCSSClasses } from './hex-library/generate-css-classes.js';
 import { drawBoard } from './hex-library/draw-board.js';
+import {log} from './hex-library/log.js';
 
 export default class Hexcabulary {
     constructor(myInstanceName, data = {}) {
         this.size = 80;
         this.unit = 'px';
         this.el = document.getElementById(myInstanceName); // reference DOM element where to inject the game
+        this.el.classList.add('hexcabulary-enclosure')
         this.me = myInstanceName;
         this.gameData = data;
         this.isPlaying = false;
@@ -16,6 +18,13 @@ export default class Hexcabulary {
         generateCSSClasses(this.size, this.unit);
         drawBoard(this);
         this.el.appendChild(addMenu(this));
+    }
+
+    dataToUri(gameData) {
+        console.log('gameData: ', gameData);
+        let data = encodeURIComponent(JSON.stringify(gameData));
+        let url = location.protocol + '://' + location.host + '/hexcabulary?' + data;
+        return url;
     }
     
 
@@ -49,6 +58,7 @@ export default class Hexcabulary {
             case 'Play':
                 this.isEditMode = false;
                 this.isPlaying = true;
+                this.gameData.startTime = new Date().getTime();
                 this.el.classList.remove('paused'); 
                 this.el.classList.remove('edit-mode'); 
                 if (this.editButton) {
@@ -68,6 +78,10 @@ const $boardData = ${JSON.stringify(this.gameData)};
 const $instance = 'myGame';
 document[$instance] = new Hexcabulary($instance, $boardData);
 </script>
+
+
+Or, play it remotely using this link...
+${this.dataToUri(this.gameData)}
 ===================================================
                 `);
                 alert(`See console.`);
@@ -94,13 +108,93 @@ document[$instance] = new Hexcabulary($instance, $boardData);
                     return;
                 }
 
-                // else we're in play mode
-                let bk = svg("rgb(0,0,0)");
                 let el = ev.srcElement.parentNode;
-                console.log('bk=', bk);
+                log(el); // help debugging word list
                 el.classList.toggle('clicked');
+
+                this.checkWorkCompleted(el);
         }
         
+    }
+
+    checkWorkCompleted(el) {
+        // scan for completed letters, words, and win/lose
+
+        const cell = el.getAttribute('id');
+        const letter = el.getAttribute('data-letter');
+        const isClicked = el.classList.contains('clicked');
+
+        if (this.gameData.clicks === undefined) this.gameData.clicks = 0;
+        this.gameData.clicks += 1;
+        // TODO: game over if level is hard and out of clicks.
+
+        this.gameData[cell].isClicked = isClicked;
+
+        let allWordsFound = true; // assume all found unless we discover otherwise
+        this.gameData.words.forEach( word => {
+            let allLettersInWordFound = true;
+
+            word.coords.forEach( coord => {
+                if (!this.gameData[coord].isClicked) {
+                    allLettersInWordFound = allWordsFound = false;
+                }
+            })
+
+            const el = document.getElementById(`wordlist-${word.word}`);
+            if (allLettersInWordFound) {
+                el.classList.add('found-word');
+                this.clearCells(word);
+            } else {
+                el.classList.remove('found-word');
+            }
+        });
+
+        if (allWordsFound) {
+            console.log('WIN!')
+            this.handleWin();
+        } else {
+
+        }
+
+    }
+
+    handleWin() {
+        // show score, clicks, time
+        // hide the rest of the board (reveal whatever is under it... if we're doing this as a puzzle)
+        const el = document.getElementById('wordlist-container');
+        el.innerHTML = `
+            <h1>You Win</h1>
+            <ul style="margin:0; padding: 0;">
+                <li>Clicks: ${this.gameData.clicks}
+                <li>Time: ${(new Date().getTime() - this.gameData.startTime) / 1000} seconds
+            </ul>
+            <center>
+                <button onclick="location.reload();">Play Again?</button>
+            </center>
+        `;
+    }
+
+    clearCells(word) {
+        if (word.hasBeenCleared) {
+            // avoids hiding letters from cells which are shared by multiple words
+            return;
+        } else {
+            // hide the cells for completed words
+            word.coords.forEach( coord => {
+                // if all references to the current cell are marked, remove it
+                const el = document.getElementById(coord);
+
+                // cells with letters shared by more than one word stick around until the last usage.
+                if (this.gameData[coord].usedBy.length > 1) {
+                    // remove the current word from shared list (reducing the reference count)
+                    const arr = this.gameData[coord].usedBy;
+                    this.gameData[coord].usedBy = arr.filter(str => str !== word.word);
+                } else {
+                    el.classList.add('fullWordFound');
+                    word.hasBeenCleared = true;
+                }
+            });
+        }
     }
 
 }

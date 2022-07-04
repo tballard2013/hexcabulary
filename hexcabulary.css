@@ -4,6 +4,12 @@
     box-sizing: border-box;
 }
 
+.hexcabulary-enclosure {
+    user-select: none;
+  -webkit-user-select: none; /*Safari*/
+  -moz-user-select: none; /*Firefox*/
+}
+
 .paused .click-zone,
 .paused .cell,
 .paused {
@@ -74,4 +80,9 @@
 .playbar button.edit-mode {
     background-color: orange;
     color: #000;
+}
+
+.found-word {
+    display: none;
+    text-decoration: line-through;
 }

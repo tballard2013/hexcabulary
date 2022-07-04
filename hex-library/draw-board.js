@@ -27,16 +27,18 @@ export function drawBoard(that) {
                 <div 
                     class="cell" 
                     id="${name}"
+                    data-letter="${letter}"
                     style="top: ${y}px; left: ${x}px;"
                 ><div class="click-zone"
                     data-id="${name}"
                     data-column = "${column}"
                     data-row = "${row}"
+                    data-letter="${letter}"
                     onclick="${that.me}.handleClick(event)"
                 >${letter}</div
                 ></div>
             `;
-            data[`cell-${column},${row}`] = {
+            data[name] = {
                 letter: letter,
                 // TODO: is this part of a word?
             }
@@ -44,9 +46,40 @@ export function drawBoard(that) {
         y += yy;
     }
 
-    
     // html = `<div style="position:relative; left: -5%; outline: 1px red solid;">${html}</div>`;
     that.gameData = JSON.parse(JSON.stringify(data));
     that.el.classList.add('paused'); 
     that.el.innerHTML = html;
+
+    // wordlist
+    let e2 = document.createElement('div');
+    e2.innerHTML = drawWordList();
+    that.el.appendChild(e2);
+    calculateCellReuse();
+
+    function drawWordList() {
+        let html = '<div id="wordlist-container" class="wordlist">'
+        const words = that.gameData.words || ['missing word list'];
+        words.forEach(word => {
+            html += `<div id="wordlist-${word.word}">${word.hint || word.word}</div>`
+        })
+        html += '</div>';
+        return html;
+    }
+
+    function calculateCellReuse() {
+        // build map of reused cells one time (we need this to avoid hiding cells/letters that are shared... until
+        // the last use case/reference count goes to zero)
+        if (that.gameData.hasCalculatedCellUsageCounts === undefined) {
+            that.gameData.words.forEach(word => {
+                word.coords.forEach(coord => {
+                    if (that.gameData[coord].usedBy === undefined) {
+                        that.gameData[coord].usedBy = []; 
+                    }
+                    that.gameData[coord].usedBy.push(word.word);
+                })
+            })
+            that.gameData.hasCalculatedCellUsageCounts = true;
+        }
+    }
 }
