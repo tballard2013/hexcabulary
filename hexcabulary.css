@@ -81,6 +81,9 @@
     background-color: orange;
     color: #000;
 }
+div.edit-mode *[data-editable="true"] {
+    outline: 1px red dotted;
+}
 
 .found-word {
     display: none;

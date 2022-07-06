@@ -30,6 +30,7 @@ export function drawBoard(that) {
                     data-letter="${letter}"
                     style="top: ${y}px; left: ${x}px;"
                 ><div class="click-zone"
+                    data-editable="true"
                     data-id="${name}"
                     data-column = "${column}"
                     data-row = "${row}"
@@ -61,7 +62,13 @@ export function drawBoard(that) {
         let html = '<div id="wordlist-container" class="wordlist">'
         const words = that.gameData.words || ['missing word list'];
         words.forEach(word => {
-            html += `<div id="wordlist-${word.word}">${word.hint || word.word}</div>`
+            html += `<div 
+                        id="wordlist-${word.word}"
+                        data-value="wordlist-${word.word}"
+                        data-name="wordlist-${word.word}"
+                        data-editable="true"
+                        onclick="${that.me}.handleClick(event)"
+                    >${word.hint || word.word}</div>`
         })
         html += '</div>';
         return html;

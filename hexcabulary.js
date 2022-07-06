@@ -30,7 +30,7 @@ export default class Hexcabulary {
 
     handleClick(ev) {
         const evEl = ev.srcElement;
-        const action = evEl.value;
+        const action = evEl.value || evEl.getAttribute('data-value');
         switch(action) {
 
             // handle button clicks
@@ -89,19 +89,43 @@ ${this.dataToUri(this.gameData)}
 
             // handle game board clicks
             default:
+                console.log(`action is ${action}, isEditMode? ${this.isEditMode}`);
                 if (this.isEditMode) {
-                    console.log('el = ', evEl);
-                    let column = evEl.dataset['column'];
-                    let row = evEl.dataset['row'];
-                    let name = `cell-${column},${row}`;
-                    let el = document.querySelector(`[data-id="${name}"]`);
-                    el.contentEditable = true;
-                    el.onblur = (e) => {
-                        console.log(`updating ${name} to ${e.srcElement.textContent}`);
-                        this.gameData[name].letter = e.srcElement.textContent;
-                    };
+                    let el;
+                    if (action && action.match(/wordlist/)) {
+                        // edit word list item (or add wordlist item)
+                        el = evEl;
+                        el.contentEditable = true;
+                        el.onblur = (e) => {
+                            console.log('blurred wordlist edit', e);
+                        }
+                    
+                    } else {
+                        // edit cell
+                        console.log('el = ', evEl);
+                        let column = evEl.dataset['column'];
+                        let row = evEl.dataset['row'];
+                        let name = `cell-${column},${row}`;
+                        el = document.querySelector(`[data-id="${name}"]`);
+                        el.contentEditable = true;
+                        el.onblur = (e) => {
+                            console.log(`updating ${name} to ${e.srcElement.textContent}`);
+                            this.gameData[name].letter = e.srcElement.textContent;
+                        };
+                    }
+
+                    let range = document.createRange();
+                    range.selectNodeContents(el);
+                    let sel = window.getSelection();
+                    sel.removeAllRanges();
+                    sel.addRange(range);
+
                     el.focus();
                     return;
+                }
+                if (action && action.match(/wordlist/)) {
+                    // TODO: what should happen if you click on a word from the word list?
+                    return; 
                 }
 
                 if (!this.isPlaying) {
