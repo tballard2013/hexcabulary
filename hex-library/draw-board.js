@@ -25,10 +25,13 @@ export function drawBoard(that) {
             let letter = (cell && cell.letter) || randomLetter();
             html += `
                 <div 
-                    class="cell" 
+                    class="cell slow-reveal" 
                     id="${name}"
                     data-letter="${letter}"
-                    style="top: ${y}px; left: ${x}px;"
+                    style="
+                        top: ${y}px; left: ${x}px; 
+                        animation-duration: ${(Math.random() * 1.5) + .05}s;
+                    "
                 ><div class="click-zone"
                     data-editable="true"
                     data-id="${name}"
@@ -49,8 +52,14 @@ export function drawBoard(that) {
 
     // html = `<div style="position:relative; left: -5%; outline: 1px red solid;">${html}</div>`;
     that.gameData = JSON.parse(JSON.stringify(data));
-    that.el.classList.add('paused'); 
     that.el.innerHTML = html;
+
+    // start play?
+    if (that.gameData.mode !== 'play') {
+        that.el.classList.add('paused'); 
+    } else {
+        that.play();
+    }
 
     // wordlist
     let e2 = document.createElement('div');

@@ -39,7 +39,7 @@ export function generateCSSClasses(size, unit) {
     const link  = document.createElement('link');
     link.rel  = 'stylesheet';
     link.type = 'text/css';
-    link.href = '/hexcabulary.css';
+    link.href = '../hexcabulary.css';
     link.media = 'all';
     document.getElementsByTagName('head')[0].appendChild(link);
 }

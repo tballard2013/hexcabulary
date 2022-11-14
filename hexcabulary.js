@@ -27,6 +27,16 @@ export default class Hexcabulary {
         return url;
     }
     
+    play() {
+        this.isEditMode = false;
+        this.isPlaying = true;
+        this.gameData.startTime = new Date().getTime();
+        this.el.classList.remove('paused'); 
+        this.el.classList.remove('edit-mode'); 
+        if (this.editButton) {
+            this.editButton.classList.remove('edit-mode');
+        }
+    }
 
     handleClick(ev) {
         const evEl = ev.srcElement;
@@ -56,14 +66,7 @@ export default class Hexcabulary {
                 this.editButton.classList.add('edit-mode');
                 return;
             case 'Play':
-                this.isEditMode = false;
-                this.isPlaying = true;
-                this.gameData.startTime = new Date().getTime();
-                this.el.classList.remove('paused'); 
-                this.el.classList.remove('edit-mode'); 
-                if (this.editButton) {
-                    this.editButton.classList.remove('edit-mode');
-                }
+                this.play();
                 return;
             case 'Export':
                 console.log(`
@@ -214,6 +217,7 @@ ${this.dataToUri(this.gameData)}
                     const arr = this.gameData[coord].usedBy;
                     this.gameData[coord].usedBy = arr.filter(str => str !== word.word);
                 } else {
+                    el.classList.add('slow-out');
                     el.classList.add('fullWordFound');
                     word.hasBeenCleared = true;
                 }

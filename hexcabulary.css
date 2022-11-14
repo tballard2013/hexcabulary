@@ -89,3 +89,36 @@ div.edit-mode *[data-editable="true"] {
     display: none;
     text-decoration: line-through;
 }
+
+.slow-reveal {
+    animation: spin;
+    animation-duration: 1s;
+    animation-timing-function: linear; 
+}
+.slow-out {
+    animation: reverse-spin;
+    animation-duration: 1s;
+    animation-timing-function: linear; 
+}
+
+@keyframes spin {
+    from {
+        transform: scale(.1) rotate(-680deg);
+        opacity: 0;
+    }
+    to {
+        transform: scale(1) rotate(360deg);
+        opacity: 1;
+    }
+}
+
+@keyframes reverse-spin {
+    from {
+        transform: scale(1) rotate(360deg);
+        opacity: 1;
+    }
+    to {
+        transform: scale(.1) rotate(-680deg);
+        opacity: 0;
+    }
+}
