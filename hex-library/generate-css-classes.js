@@ -15,9 +15,9 @@ export function generateCSSClasses(size, unit) {
             color: #fff;
             background-image: ${svg("rgb(0,0,0)")};
         }
-        .fullWordFound {
-            opacity: 0;
-            cursor: none;
+        .sharedLetterClicked {
+            color: #CCC;
+            background-image: ${svg("rgb(100,100,100)")};
         }
         .wordlist {
             margin: 1rem;

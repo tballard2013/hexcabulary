@@ -126,20 +126,27 @@ ${this.dataToUri(this.gameData)}
                     el.focus();
                     return;
                 }
+
                 if (action && action.match(/wordlist/)) {
-                    // TODO: what should happen if you click on a word from the word list?
-                    return; 
+                    return this.showLetterHint(action); 
                 }
 
                 if (!this.isPlaying) {
                     return;
                 }
 
+                // regular game play click...
                 let el = ev.srcElement.parentNode;
                 log(el); // help debugging word list
-                el.classList.toggle('clicked');
+                if (el.classList.contains('fullWordFound')) {
+                    log('already found, do nothing', el);
+                } else if (el.classList.contains('sharedLetterClicked')) {
+                    log('shared letter cannot be unselected once clicked');
+                } else {
+                    el.classList.toggle('clicked');
 
-                this.checkWorkCompleted(el);
+                    this.checkWorkCompleted(el);
+                }
         }
         
     }
@@ -185,9 +192,30 @@ ${this.dataToUri(this.gameData)}
 
     }
 
+    showLetterHint(search) {
+        // find the word in the data store
+        // pick a letter in the word
+        // flash the cell where the letter is briefly
+        // reduce the score by the cost of the hint (or add the penalty)
+       
+        const _word = search.replace(/wordlist-/, ''); // pull "wordlist-" off the front.
+        const letter = _word.charAt(Math.random() * _word.length);
+        const letterIndex = Math.floor(Math.random() * _word.length);
+        const data = this.gameData.words.filter(word => word.word == _word);
+        const cell = data[0].coords[letterIndex];
+        const el = document.querySelector(`[data-id="${cell}"]`).parentNode;
+        
+        el.classList.add('hint');
+        
+        setTimeout(() => {
+            el.classList.remove('hint');
+        }, 1000);
+    }
+
     handleWin() {
         // show score, clicks, time
         // hide the rest of the board (reveal whatever is under it... if we're doing this as a puzzle)
+        this.isPlaying = false;
         const el = document.getElementById('wordlist-container');
         el.innerHTML = `
             <h1>You Win</h1>
@@ -216,6 +244,9 @@ ${this.dataToUri(this.gameData)}
                     // remove the current word from shared list (reducing the reference count)
                     const arr = this.gameData[coord].usedBy;
                     this.gameData[coord].usedBy = arr.filter(str => str !== word.word);
+
+                    // disable the cell selection (to avoid reintroducing the cleared words for shared letters)
+                    el.classList.add('sharedLetterClicked');
                 } else {
                     el.classList.add('slow-out');
                     el.classList.add('fullWordFound');

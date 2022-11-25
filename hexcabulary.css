@@ -85,9 +85,24 @@ div.edit-mode *[data-editable="true"] {
     outline: 1px red dotted;
 }
 
+.fullWordFound {
+    opacity: 0;
+    cursor: default;
+}
+.fullWordFound .click-zone,
+.sharedLetterClicked, 
+.sharedLetterClicked .click-zone {
+    cursor: default;
+}
+
 .found-word {
     display: none;
     text-decoration: line-through;
+}
+
+.hint * {
+    animation: bouncy .4s infinite;
+    /* see generate-css-classes.js if you want to modify background image/color */
 }
 
 .slow-reveal {
@@ -120,5 +135,17 @@ div.edit-mode *[data-editable="true"] {
     to {
         transform: scale(.1) rotate(-680deg);
         opacity: 0;
+    }
+}
+
+@keyframes bouncy {
+    from, to { 
+        transform: scale(1, 1); 
+    }
+    25% { 
+        transform: scale(0.85, 1.15); 
+    }
+    75% { 
+        transform: scale(1.15, 0.85); 
     }
 }
