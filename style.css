@@ -1,1 +1,79 @@
-/* see hexcabulary.css */
+body {
+    font-family: sans-serif;
+}
+
+/* 
+    Allow background-image translucency based on example here:
+        https://www.digitalocean.com/community/tutorials/how-to-change-a-css-background-images-opacity
+
+    Thanks to Nicholas Cerminara and Andy Hattemer!
+*/
+
+.wrapper {
+    position: relative;
+}
+
+.wrapper:before {
+    content: ' ';
+    display: block;
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100vh;
+    opacity: 0.2;
+    background-image: url(assets/hex-title-background.png);
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: 50% 1em;
+}
+
+.content {
+    position: relative;
+    max-width: 500px;
+    margin: auto;
+    background: #eee;
+    opacity: 0.85;
+    padding: 1em 2em;
+    border: 5px #000 solid;
+    border-radius: 1em;
+    top: 10vh;
+    box-shadow: .1em .1em 1em #333;
+}
+
+h1,
+h2 {
+    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+    margin: 0 0 .5em 0;
+}
+
+/* START: BUTTON 4 */
+.animated-button {
+    box-shadow: .1em .5em 1em #000;
+    border: 2px #fff solid;
+    border-radius: 1em;
+    padding: .5em 2em;
+    font-size: 1em;
+    font-weight: bold;
+    background-color: #eee;
+    color: #fff;
+    animation-name: pulse;
+    animation-duration: 2s;
+    animation-direction: alternate;
+    animation-iteration-count: infinite;
+}
+@keyframes pulse {
+    from {
+        background-color: #33f;
+    }
+    to {
+        background-color: #f33;
+    }
+}
+/* END: BUTTON 4 */
+
+@media screen and (min-width: 600px) {
+    .wrapper:before {
+        background-size: 100vh;
+    }
+}

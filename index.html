@@ -4,56 +4,67 @@
 <!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
 <!--[if gt IE 8]>      <html class="no-js"> <!--<![endif]-->
 <html>
-    <head>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <title>Hexcabulary</title>
-        <meta name="description" content="">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link rel="stylesheet" href="">
-        <style>
-            body {
-                background-image: url(assets/hex1.png);
-                background-repeat: no-repeat;
-                background-size: cover;
-                background-position-y: top;
-            }
-        </style>
-    </head>
-    <body>
-        <!--[if lt IE 7]>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Hexcabulary</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <!--[if lt IE 7]>
             <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="#">upgrade your browser</a> to improve your experience.</p>
         <![endif]-->
-        <h1>Hexcabulary</h1>
-        A vocabulary game using a hexagonal matrix and various strategies for hiding words for searching.
 
-        <h2>Coming Soon!</h2>
+    <div class="wrapper">
+        <div class="content">
 
-        <button onclick="location.href='./hexcabulary.html'">Play</button>
+            <div style="position: absolute; top: .5em; right: .5em;">
+                <button class="animated-button"
+                    onclick="window.open('wordsearch-puzzles-examples/dog-names-example-puzzle.html', 'puzzle')"
+                >Play</button>
+            </div>
 
-        <div style="background: #fff; opacity: 0.9; float: left; padding: 2em; border: 3px #000 solid;
-        border-radius: 1em;">
-        <h2 style="margin:0">Examples</h2>
-        <li><a href="wordsearch-puzzles-examples/dog-names-example-puzzle.html"
-            >Dog Names Example Puzzle</a></li>
-        <li><a href="wordsearch-puzzles-examples/simple-math-addition-substraction-wordsearch-puzzle.html"
-            >Simple MATH Addition Substraction Hexcabulary Wordsearch Puzzle</a>
+
+            <h1>Hexcabulary</h1>
+
+            Search for vocabulary words hidden in a hexagonal game board.
+            Similar to classic word search games, but with two additional search dimensions and novel hiding strategies
+            such as snake and boundary-rollover. 
+            Enjoy.
+            
+            <p>This is a work in progress. Feedback/bug reports appreciated.</p>
+
+            <li><a href="wordsearch-puzzles-examples/simple-math-addition-substraction-wordsearch-puzzle.html"
+                >Simple MATH (Addition Subtraction) Puzzle</a>
+            <li><a href="wordsearch-puzzles-examples/dog-names-example-puzzle.html">Dog Names Example Puzzle</a></li>
+            </li>
+            <li><a href="hexcabulary.html">Create/edit new puzzle</a></li>
+            <li>
+                <a href="https://thomas.ballard.ws" target="_blank">Thomas Ballard</a> (Authors website/bugs/feedback)
+                
             </li>
         </div>
+    </div>
 
-        <!-- Default Statcounter code for hexcabulary
+
+    <!-- Default Statcounter code for hexcabulary
         https://hexcabulary.netlify.com -->
-        <script type="text/javascript">
-            var sc_project = 12828113;
-            var sc_invisible = 1;
-            var sc_security = "465dbff8"; 
-        </script>
-        <script type="text/javascript" src="https://www.statcounter.com/counter/counter.js" async></script>
-        <noscript>
-            <div class="statcounter"><a title="Web Analytics" href="https://statcounter.com/" target="_blank"><img
-                        class="statcounter" src="https://c.statcounter.com/12828113/0/465dbff8/1/" alt="Web Analytics"
-                        referrerPolicy="no-referrer-when-downgrade"></a></div>
-        </noscript>
-        <!-- End of Statcounter Code -->
-    </body>
+    <script type="text/javascript">
+        var sc_project = 12828113;
+        var sc_invisible = 1;
+        var sc_security = "465dbff8"; 
+    </script>
+    <script type="text/javascript" src="https://www.statcounter.com/counter/counter.js" async></script>
+    <noscript>
+        <div class="statcounter"><a title="Web Analytics" href="https://statcounter.com/" target="_blank"><img
+                    class="statcounter" src="https://c.statcounter.com/12828113/0/465dbff8/1/" alt="Web Analytics"
+                    referrerPolicy="no-referrer-when-downgrade"></a></div>
+    </noscript>
+    <!-- End of Statcounter Code -->
+</body>
+
 </html>
