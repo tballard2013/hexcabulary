@@ -6,9 +6,26 @@ export function addMenu(that) {
     });
 
     let el = document.createElement('div');
-    el.className = 'playbar';
+    el.id = 'playbar';
+    el.classList.add('playbar');
+
+    if (location.hash && location.hash.includes('edit-mode')) {
+        // do nothing...leave the menu in edit-mode by default
+    } else {
+        console.log('add "#edit-mode" to the location to enable edit mode');
+        el.classList.add('hidden');
+    }
     el.innerHTML = html;
+
+    window.addEventListener('hashchange',() => {
+        let el = document.querySelector('#playbar');
+        if (location.hash && location.hash.includes('edit-mode')) {
+            // do nothing...leave the menu in edit-mode by default
+            el.classList.remove('hidden');
+        } else {
+            el.classList.add('hidden');
+        }
+    });
 
     return el;
 }
-

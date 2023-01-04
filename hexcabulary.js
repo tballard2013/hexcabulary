@@ -21,6 +21,9 @@ export default class Hexcabulary {
     }
 
     dataToUri(gameData) {
+        // TODO: need to revisit this was a tiny url generator... the game data can be way too long for a url.
+        return '';
+
         console.log('gameData: ', gameData);
         let data = encodeURIComponent(JSON.stringify(gameData));
         let url = location.protocol + '://' + location.host + '/hexcabulary?' + data;
@@ -69,6 +72,11 @@ export default class Hexcabulary {
                 this.play();
                 return;
             case 'Export':
+                // clean up the game data to export
+                let newGameData = { ...this.gameData };
+                delete newGameData['hasCalculatedCellUsageCounts'];
+                delete newGameData['startTime'];
+                // TODO: we should probably also remove all the "usedBy" added during draw board (not needed for edit)
                 console.log(`
 ===================================================
 To use this board data in a game...
@@ -76,8 +84,8 @@ To use this board data in a game...
 
 <div id="myGame"><!-- game will appear here --></div>
 <script type="module">
-import Hexcabulary from './hexcabulary.js';
-const $boardData = ${JSON.stringify(this.gameData)};
+import Hexcabulary from '/hexcabulary.js';
+const $boardData = ${JSON.stringify(newGameData, '', 4)};
 const $instance = 'myGame';
 document[$instance] = new Hexcabulary($instance, $boardData);
 </script>

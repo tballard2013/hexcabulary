@@ -23,25 +23,33 @@ export function drawBoard(that) {
             let name = `cell-${column},${row}`;
             let cell = that.gameData[name];
             let letter = (cell && cell.letter) || randomLetter();
-            html += `
-                <div 
-                    class="cell slow-reveal" 
+
+            // support empty cells (',') and holes ('.') in the board 
+            let clickable = (letter !== '' && letter !== '.');
+            let isHole = letter === '.';
+            if (letter === ',' || letter === '.') {
+                letter = ''; // don't draw the meta chars
+            }
+
+            // "." means don't draw the cell (leaves a hole in the board)
+            html += `<div 
+                    class="${!isHole ? 'cell slow-reveal' : '' }" 
                     id="${name}"
                     data-letter="${letter}"
                     style="
                         top: ${y}px; left: ${x}px; 
-                        animation-duration: ${(Math.random() * 1.5) + .05}s;
+                        ${!isHole ? `animation-duration: ${(Math.random() * 1.5) + .05}s;`:''}
                     "
-                ><div class="click-zone"
+                ><div 
+                    class="${clickable ? 'click-zone' : ''}"
                     data-editable="true"
                     data-id="${name}"
                     data-column = "${column}"
                     data-row = "${row}"
                     data-letter="${letter}"
-                    onclick="${that.me}.handleClick(event)"
+                    ${clickable ? `onclick="${that.me}.handleClick(event)"` : 'data-notclickable="true"'}
                 >${letter}</div
-                ></div>
-            `;
+                ></div>`;
             data[name] = {
                 letter: letter,
                 // TODO: is this part of a word?
@@ -54,12 +62,12 @@ export function drawBoard(that) {
     that.gameData = JSON.parse(JSON.stringify(data));
     that.el.innerHTML = html;
 
-    // start play?
-    if (that.gameData.mode !== 'play') {
-        that.el.classList.add('paused'); 
-    } else {
+    // start play? (TODO: revisit... clean up paused?)
+    // if (that.gameData.mode !== 'play') {
+    //     that.el.classList.add('paused'); 
+    // } else {
         that.play();
-    }
+    // }
 
     // wordlist
     let e2 = document.createElement('div');
