@@ -30,6 +30,14 @@ export function generateCSSClasses(size, unit) {
             place-items: center;
             border-radius: 1em;
             font-size: ${size * .02}em;
+            opacity: 0.8;
+        }
+        .wordlist:hover {
+            opacity: 1;
+        }
+        .wordlist a {
+            text-decoration: none;
+            color: #006;
         }
     `;
     document.getElementsByTagName('head')[0].appendChild(style);

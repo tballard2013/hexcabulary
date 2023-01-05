@@ -14,6 +14,7 @@ export default class Hexcabulary {
         this.gameData = data;
         this.isPlaying = false;
         this.isEditMode = false;
+        this.el.style.visibility = 'hidden'; // start hidden
     
         generateCSSClasses(this.size, this.unit);
         drawBoard(this);
@@ -248,10 +249,11 @@ ${this.dataToUri(this.gameData)}
                 const el = document.getElementById(coord);
 
                 // cells with letters shared by more than one word stick around until the last usage.
-                if (this.gameData[coord].usedBy.length > 1) {
+                console.log('this.gameDataExtraInfo=', this.gameDataExtraInfo);
+                if (this.gameDataExtraInfo[coord].usedBy.length > 1) {
                     // remove the current word from shared list (reducing the reference count)
-                    const arr = this.gameData[coord].usedBy;
-                    this.gameData[coord].usedBy = arr.filter(str => str !== word.word);
+                    const arr = this.gameDataExtraInfo[coord].usedBy;
+                    this.gameDataExtraInfo[coord].usedBy = arr.filter(str => str !== word.word);
 
                     // disable the cell selection (to avoid reintroducing the cleared words for shared letters)
                     el.classList.add('sharedLetterClicked');

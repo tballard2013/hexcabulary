@@ -7,10 +7,12 @@ export function drawBoard(that) {
     // let xx = 94, yy = 49;
     let xx = that.size - 6;
     let yy = that.size / 2 - 2;
+    let boardEnclosureLeft = xx * -1; // trying to help centering effect with the hex offset
     let styles = document.styleSheets[0];
     let data = JSON.parse(JSON.stringify(that.gameData || {}));
     let ROWS = that.gameData.rows || 10;
     let COLUMNS = that.gameData.columns || 10;
+    let boardHeight = yy * ROWS;
 
     // store with data (in case we're generating the data here, we need to persist it)
     data.rows = ROWS;
@@ -25,11 +27,8 @@ export function drawBoard(that) {
             let letter = (cell && cell.letter) || randomLetter();
 
             // support empty cells (',') and holes ('.') in the board 
-            let clickable = (letter !== '' && letter !== '.');
+            let isClickable = (letter !== ',' && letter !== '.');
             let isHole = letter === '.';
-            if (letter === ',' || letter === '.') {
-                letter = ''; // don't draw the meta chars
-            }
 
             // "." means don't draw the cell (leaves a hole in the board)
             html += `<div 
@@ -41,14 +40,14 @@ export function drawBoard(that) {
                         ${!isHole ? `animation-duration: ${(Math.random() * 1.5) + .05}s;`:''}
                     "
                 ><div 
-                    class="${clickable ? 'click-zone' : ''}"
+                    class="${isClickable ? 'click-zone' : ''}"
                     data-editable="true"
                     data-id="${name}"
                     data-column = "${column}"
                     data-row = "${row}"
                     data-letter="${letter}"
-                    ${clickable ? `onclick="${that.me}.handleClick(event)"` : 'data-notclickable="true"'}
-                >${letter}</div
+                    ${isClickable ? `onclick="${that.me}.handleClick(event)"` : 'data-clickable="false"'}
+                >${(!isHole && isClickable) ? letter : `${isClickable ? '=' : ' '}`}</div
                 ></div>`;
             data[name] = {
                 letter: letter,
@@ -58,9 +57,21 @@ export function drawBoard(that) {
         y += yy;
     }
 
-    // html = `<div style="position:relative; left: -5%; outline: 1px red solid;">${html}</div>`;
+    html += drawWordList();
+
+    html = `<div style="
+        position:relative; 
+        left: ${boardEnclosureLeft}px;
+        width: ${COLUMNS * that.size}px;
+        margin: auto;
+        height: 100vh;
+    ">${html}</div>`;
     that.gameData = JSON.parse(JSON.stringify(data));
     that.el.innerHTML = html;
+
+    document.addEventListener('DOMContentLoaded', function() {
+        that.el.classList.add('reveal-board');
+     });
 
     // start play? (TODO: revisit... clean up paused?)
     // if (that.gameData.mode !== 'play') {
@@ -69,23 +80,35 @@ export function drawBoard(that) {
         that.play();
     // }
 
-    // wordlist
-    let e2 = document.createElement('div');
-    e2.innerHTML = drawWordList();
-    that.el.appendChild(e2);
     calculateCellReuse();
 
     function drawWordList() {
-        let html = '<div id="wordlist-container" class="wordlist">'
+        const _top = that.gameData['menu-top'];
+        const _right = that.gameData['menu-right'];
+        const _style1 = `
+            position: absolute;
+            top: ${_top};
+            right: ${_right};
+            z-index: 9999;
+        `;
+        const _style2 = `
+            position: absolute;
+            top: ${boardHeight + that.size}px;
+            left: ${that.size}px;
+            width: 100%;
+        `;
+        let html = `<div id="wordlist-container" class="wordlist" 
+            style="${_top || _right ? _style1 : _style2}"
+            >`
         const words = that.gameData.words || ['missing word list'];
         words.forEach(word => {
-            html += `<div 
+            html += `<a href="javascript:void(0)" 
                         id="wordlist-${word.word}"
                         data-value="wordlist-${word.word}"
                         data-name="wordlist-${word.word}"
                         data-editable="true"
                         onclick="${that.me}.handleClick(event)"
-                    >${word.hint || word.word}</div>`
+                    >${word.hint || word.word}</a>`
         })
         html += '</div>';
         return html;
@@ -94,16 +117,25 @@ export function drawBoard(that) {
     function calculateCellReuse() {
         // build map of reused cells one time (we need this to avoid hiding cells/letters that are shared... until
         // the last use case/reference count goes to zero)
-        if (that.gameData.hasCalculatedCellUsageCounts === undefined) {
+        // if (that.gameData.hasCalculatedCellUsageCounts === undefined) {
+        if (that.gameDataExtraInfo === undefined) {
+            that.gameDataExtraInfo = {}; // don't want to store these with "export" default game data after edit.
+                                         // instead, we discover these during board draw, and use when clearing cells
             that.gameData.words.forEach(word => {
                 word.coords.forEach(coord => {
-                    if (that.gameData[coord].usedBy === undefined) {
-                        that.gameData[coord].usedBy = []; 
+                    if (that.gameDataExtraInfo[coord] === undefined) {
+                        that.gameDataExtraInfo[coord] = {};
                     }
-                    that.gameData[coord].usedBy.push(word.word);
+
+                    // if (that.gameData[coord].usedBy === undefined) {
+                    if (that.gameDataExtraInfo[coord].usedBy === undefined) {
+                        that.gameDataExtraInfo[coord].usedBy = []; 
+                    }
+                    that.gameDataExtraInfo[coord].usedBy.push(word.word);
                 })
             })
             that.gameData.hasCalculatedCellUsageCounts = true;
         }
     }
+    
 }

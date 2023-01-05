@@ -168,3 +168,19 @@ div.edit-mode *[data-editable="true"] {
         transform: scale(1.15, 0.85); 
     }
 }
+
+.reveal-board {
+    visibility: visible !important;
+    animation-duration: 1s;
+    animation-name: slidein;
+  }
+  
+  @keyframes slidein {
+    from {
+      margin-top: -100%;
+    }
+  
+    to {
+      margin-top: 0%;
+    }
+  }
