@@ -1,7 +1,8 @@
 import { svg } from './hex-library/svg.js';
 import { addMenu } from './hex-library/add-menu.js';
 import { generateCSSClasses } from './hex-library/generate-css-classes.js';
-import { drawBoard } from './hex-library/draw-board.js';
+import { drawBoard } from '/hex-library/draw-board.js';
+import { buildWordListHTML } from "/hex-library/draw-wordlist.js";
 import {log} from './hex-library/log.js';
 
 export default class Hexcabulary {
@@ -68,6 +69,7 @@ export default class Hexcabulary {
                 this.el.classList.remove('paused'); 
                 this.editButton = evEl;
                 this.editButton.classList.add('edit-mode');
+                this.highlightAllWordCells();
                 return;
             case 'Play':
                 this.play();
@@ -114,15 +116,58 @@ ${this.dataToUri(this.gameData)}
                     
                     } else {
                         // edit cell
-                        console.log('el = ', evEl);
                         let column = evEl.dataset['column'];
                         let row = evEl.dataset['row'];
                         let name = `cell-${column},${row}`;
                         el = document.querySelector(`[data-id="${name}"]`);
+
+                        if (window.event.ctrlKey) {
+                            //ctrl was held down during the click
+                            if (this.gameDataExtraInfo === undefined) {
+                                this.gameDataExtraInfo = {};
+                            }
+                            if (this.gameDataExtraInfo.editWord === undefined) {
+                                this.gameDataExtraInfo.editWord = {
+                                    word: '',
+                                    coords: [] // ['cell-3,5', 'cell-2,5', 'cell-1,5'],
+                                };
+                            }
+                            if (this.gameDataExtraInfo.editWord.coords === undefined) {
+                                this.gameDataExtraInfo.editWord.coords = [];
+                            }
+                            console.log(`adding cell ${column},${row} to word containing ${this.gameData[name].letter}`);
+                            el.classList.add('edit-word-select');
+                            this.gameDataExtraInfo.editWord.word += this.gameData[name].letter;
+                            this.gameDataExtraInfo.editWord.coords.push(`cell-${column},${row}`);
+                        } else {
+                            console.log('this.gameDataExtraInfo=', this.gameDataExtraInfo);
+                            if (this.gameDataExtraInfo.editWord !== undefined) {
+                                // if ctrl key is up, and we've been accumulating word data... 
+                                // show the accumulated value, so we can manually copy it to the data list (TODO automate this)
+                                // then clear it in prep for the next word selection sequence (CTRL+CLICK)
+                                console.log('CLEARING WORD BUFFER: ', JSON.stringify(this.gameDataExtraInfo.editWord, null, 4));
+                                this.gameData.words.unshift(this.gameDataExtraInfo.editWord);
+                                let oldEl = document.querySelector('#wordlist-container');
+                                let newEl = document.createElement('div');
+                                    newEl.innerHTML = buildWordListHTML(this);
+                                oldEl.parentElement.replaceChild(newEl, oldEl);
+                                delete this.gameDataExtraInfo.editWord;
+                                document.querySelectorAll('.edit-word-select')
+                                    .forEach(e => e.classList.remove('edit-word-select'));
+                            } 
+                            else {
+                                console.log('cell edit: ', evEl);
+                            }
+
+                        }
+
                         el.contentEditable = true;
                         el.onblur = (e) => {
-                            console.log(`updating ${name} to ${e.srcElement.textContent}`);
-                            this.gameData[name].letter = e.srcElement.textContent;
+                            if (this.gameData[name].letter !== e.srcElement.textContent) {
+                                console.log(`updating ${name} to ${e.srcElement.textContent}`);
+                                this.gameData[name].letter = e.srcElement.textContent;
+                                e.srcElement.classList.add('edit-changed');
+                            }
                         };
                     }
 
@@ -236,6 +281,15 @@ ${this.dataToUri(this.gameData)}
                 <button onclick="location.reload();">Play Again?</button>
             </center>
         `;
+    }
+
+    highlightAllWordCells() {
+        this.gameData.words.forEach(w => {
+            w.coords.forEach(c => {
+                const el = document.querySelector(`[id="${c}"]`)
+                el.classList.add('clicked');
+            })
+        })
     }
 
     clearCells(word) {

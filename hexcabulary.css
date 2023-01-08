@@ -103,6 +103,16 @@
 div.edit-mode *[data-editable="true"] {
     outline: 1px red dotted;
 }
+.edit-changed {
+    /* user has modified the letter in this cell */
+    color: #fff !important;
+    background-color: #000 !important;
+}
+.edit-word-select {
+    /* user is ctrl-click selecting multiple cells representing a single word */
+    color: #fff !important;
+    background: #f00 !important;
+}
 
 .fullWordFound {
     opacity: 0;
