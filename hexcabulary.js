@@ -2,7 +2,7 @@ import { svg } from './hex-library/svg.js';
 import { addMenu } from './hex-library/add-menu.js';
 import { generateCSSClasses } from './hex-library/generate-css-classes.js';
 import { drawBoard } from '/hex-library/draw-board.js';
-import { buildWordListHTML } from "/hex-library/draw-wordlist.js";
+import { buildWordListHTML, buildWordsHTML } from "/hex-library/draw-wordlist.js";
 import {log} from './hex-library/log.js';
 
 export default class Hexcabulary {
@@ -58,6 +58,9 @@ export default class Hexcabulary {
                 this.el.id = $name;
                 setTimeout(() => {
                     window[$name] = new Hexcabulary($name, { columns: v[0], rows: v[1] });
+                    setTimeout(() => {
+                        dispatchEvent(new HashChangeEvent("hashchange"));
+                    }, 1000);
                 }, 500);
                 return;
             case 'Reset':
@@ -72,19 +75,26 @@ export default class Hexcabulary {
                 this.highlightAllWordCells();
                 return;
             case 'Play':
+                location.hash = '';
                 this.play();
+                return;
+            case 'New Word':
+                let word = prompt('Enter new word');
+                if (word) {
+                    this.gameData.words.unshift({word, hint: '', coords: []});
+                    let el = document.querySelector('#wordlist-container');
+                    let html = buildWordsHTML(this);
+                    el.innerHTML = html;
+                }
                 return;
             case 'Export':
                 // clean up the game data to export
+                console.clear();
                 let newGameData = { ...this.gameData };
                 delete newGameData['hasCalculatedCellUsageCounts'];
                 delete newGameData['startTime'];
                 // TODO: we should probably also remove all the "usedBy" added during draw board (not needed for edit)
-                console.log(`
-===================================================
-To use this board data in a game...
-
-
+                let sourceCode = `
 <div id="myGame"><!-- game will appear here --></div>
 <script type="module">
 import Hexcabulary from '/hexcabulary.js';
@@ -92,6 +102,13 @@ const $boardData = ${JSON.stringify(newGameData, '', 4)};
 const $instance = 'myGame';
 document[$instance] = new Hexcabulary($instance, $boardData);
 </script>
+`;
+                console.log(`
+===================================================
+To use this board data in a game...
+
+
+${sourceCode}
 
 
 Or, play it remotely using this link...

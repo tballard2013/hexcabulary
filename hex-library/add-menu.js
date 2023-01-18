@@ -1,9 +1,29 @@
 export function addMenu(that) {
     let html = '';
-    const items = ['Play', 'Reset', 'Edit', 'Export', 'Generate Random'];
+    let buttons = '';
+    const items = ['Play', 'Reset', 'Edit', 'Export', 'Generate Random', 'New Word'];
     items.forEach(item => { 
-        html += `<button onclick="${that.me}.handleClick(event)" value="${item}">${item}</button>`
+        buttons += `<button onclick="${that.me}.handleClick(event)" value="${item}">${item}</button>`
     });
+
+    html += `
+    <div style="
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        text-align: left;
+        margin: 0; padding: 0;
+    ">
+    <div>
+    Legend:
+    <li>"." = empty cell (unusable cell, but visible)
+    <li>"," = hidden cell (a hole in the board)
+    <li>"*" = place random letter in cell
+    </div>
+    <div>
+    ${buttons}
+    </div>
+    </div>
+    `
 
     let el = document.createElement('div');
     el.id = 'playbar';

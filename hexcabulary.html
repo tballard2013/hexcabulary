@@ -8,7 +8,7 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>Play Hexcabulary Game</title>
+    <title>Build a Hexcabulary Game Puzzle</title>
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="style.css">
@@ -21,15 +21,38 @@
 
     <div id="myGame">Attemping to load hexcabulary module...</div>
     <script type="module">
-    import Hexcabulary from './hexcabulary.js'; // no useful error handling can help notify if this fails (make sure the request succeeds)
-    const $boardData = {
-        columns: 10, rows: 10,
-        words: []
-    };
-    const $instance = 'myGame';
-    document[$instance] = new Hexcabulary($instance, $boardData);
+        import Hexcabulary from './hexcabulary.js'; // no useful error handling can help notify if this fails (make sure the request succeeds)
+        const $boardData = {
+            columns: 8, rows: 8,
+            words: []
+        };
+        const $instance = 'myGame';
+        document[$instance] = new Hexcabulary($instance, $boardData);
     </script>
-    
+
+    <script>
+        // include link for getting in to edit-mode
+        addEventListener('hashchange', (ev) => {
+            let id = 'edit-mode-button';
+            let el = document.querySelector(`#${id}`);
+            if (!el) {
+                el = document.createElement('a');
+                el.id = id;
+                el.style.position = 'fixed';
+                el.style.top = 0;
+                el.zIndex = 9999;
+                el.href = "#edit-mode"
+                el.innerHTML = 'Enable Edit Mode';
+                document.body.appendChild(el);
+            }
+            el.style.display = (!location.hash.match(/#edit-mode/)) ? '' : 'none';
+        })
+        setTimeout(() => {
+            dispatchEvent(new HashChangeEvent("hashchange"))
+        }, 1000);
+    </script>
+
+
 </body>
 
 </html>

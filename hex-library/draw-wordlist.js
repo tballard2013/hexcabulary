@@ -17,11 +17,30 @@ export function buildWordListHTML(that) {
         left: ${that.size}px;
         width: 100%;
     `;
+    
     let html = `<div id="wordlist-container" class="wordlist" 
         style="${_top || _right ? _style1 : _style2}"
         >`
-    const words = that.gameData.words || ['missing word list'];
+
+    html += buildWordsHTML(that);
+    
+    html += '</div>';
+
+    return html;
+}
+
+export function buildWordsHTML(that) {
+    let html = '';
+    const words = that.gameData.words || [];
+
+    if (!words.length) {
+        html += 'No word list provided.';
+    }
+
     words.forEach(word => {
+        if (!word) {
+            html += 'No word?'
+        } else {
         html += `<a href="javascript:void(0)" 
                     id="wordlist-${word.word}"
                     data-value="wordlist-${word.word}"
@@ -29,8 +48,8 @@ export function buildWordListHTML(that) {
                     data-editable="true"
                     onclick="${that.me}.handleClick(event)"
                 >${word.hint || word.word}</a>`
+        }
     })
-    html += '</div>';
 
     return html;
 }
