@@ -31,10 +31,17 @@ export function buildWordListHTML(that) {
 
 export function buildWordsHTML(that) {
     let html = '';
-    const words = that.gameData.words || [];
+    let words = that.gameData.words || [];
 
     if (!words.length) {
         html += 'No word list provided.';
+    }
+
+    if (that.gameType === 'single-random' && words.length) {
+        // pick a random word from the list
+        const rnd = Math.floor(Math.random() * words.length);
+        let _words = [words[rnd]];
+        words = _words;
     }
 
     words.forEach(word => {

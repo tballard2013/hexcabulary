@@ -1,7 +1,7 @@
 import { svg } from './hex-library/svg.js';
 import { addMenu } from './hex-library/add-menu.js';
 import { generateCSSClasses } from './hex-library/generate-css-classes.js';
-import { drawBoard } from '/hex-library/draw-board.js';
+import { drawBoard } from './hex-library/draw-board.js';
 import { buildWordListHTML, buildWordsHTML } from "/hex-library/draw-wordlist.js";
 import {log} from './hex-library/log.js';
 
@@ -16,6 +16,7 @@ export default class Hexcabulary {
         this.isPlaying = false;
         this.isEditMode = false;
         this.el.style.visibility = 'hidden'; // start hidden
+        this.gameType = data.gameType || 'default';
     
         generateCSSClasses(this.size, this.unit);
         drawBoard(this);
@@ -289,13 +290,18 @@ ${this.dataToUri(this.gameData)}
         this.isPlaying = false;
         const el = document.getElementById('wordlist-container');
         el.innerHTML = `
-            <h1>You Win</h1>
-            <ul style="margin:0; padding: 0;">
-                <li>Clicks: ${this.gameData.clicks}
-                <li>Time: ${(new Date().getTime() - this.gameData.startTime) / 1000} seconds
-            </ul>
-            <center>
-                <button onclick="location.reload();">Play Again?</button>
+            <center style="font-size: 1.2rem;">
+                You won in ${(Math.floor((new Date().getTime() - this.gameData.startTime) / 1000))} seconds
+                with ${this.gameData.clicks} clicks
+                <div style="padding-top: 1rem; font-size: .8rem;">
+                    <button class="animated-button"
+                        onclick="location.reload()"
+                    >Play Again</button>
+
+                    <button class="animated-button"
+                    onclick="location.href='/';"
+                    >More Puzzles</button>
+                <div>
             </center>
         `;
     }

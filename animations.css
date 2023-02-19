@@ -1,0 +1,24 @@
+/* START: BUTTON 4 */
+.animated-button {
+    box-shadow: .1em .5em 1em #000;
+    border: 2px #fff solid;
+    border-radius: 1em;
+    padding: .5em 2em;
+    font-size: 1em;
+    font-weight: bold;
+    background-color: #eee;
+    color: #fff;
+    animation-name: pulse;
+    animation-duration: 2s;
+    animation-direction: alternate;
+    animation-iteration-count: infinite;
+}
+@keyframes pulse {
+    from {
+        background-color: #33f;
+    }
+    to {
+        background-color: #f33;
+    }
+}
+/* END: BUTTON 4 */

@@ -93,17 +93,20 @@ export function drawBoard(that) {
             // instead, we discover these during board draw, and use when clearing cells
             if (that.gameData.words) {
                 that.gameData.words.forEach(word => {
-                    word.coords.forEach(coord => {
-                        if (that.gameDataExtraInfo[coord] === undefined) {
-                            that.gameDataExtraInfo[coord] = {};
-                        }
+                    if (that.gameType !== 'single-random') {
+                        word.coords.forEach(coord => {
+                            if (that.gameDataExtraInfo[coord] === undefined) {
+                                that.gameDataExtraInfo[coord] = {};
+                            }
 
-                        // if (that.gameData[coord].usedBy === undefined) {
-                        if (that.gameDataExtraInfo[coord].usedBy === undefined) {
-                            that.gameDataExtraInfo[coord].usedBy = [];
-                        }
-                        that.gameDataExtraInfo[coord].usedBy.push(word.word);
-                    })
+                            // if (that.gameData[coord].usedBy === undefined) {
+                            if (that.gameDataExtraInfo[coord].usedBy === undefined) {
+                                that.gameDataExtraInfo[coord].usedBy = [];
+                            }
+                            that.gameDataExtraInfo[coord].usedBy.push(word.word);
+                        })
+                    }
+
                 })
                 that.gameData.hasCalculatedCellUsageCounts = true;
             } else {

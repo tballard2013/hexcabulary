@@ -1,3 +1,5 @@
+@import url(animations.css);
+
 * {
     margin: 0;
     padding: 0;
@@ -6,10 +8,9 @@
 
 .hexcabulary-enclosure {
     user-select: none;
-  -webkit-user-select: none; /*Safari*/
-  -moz-user-select: none; /*Firefox*/
+    -webkit-user-select: none; /*Safari*/
+    -moz-user-select: none; /*Firefox*/
 }
-
 .paused .click-zone,
 .paused .cell,
 .paused {
@@ -172,10 +173,10 @@ div.edit-mode *[data-editable="true"] {
         transform: scale(1, 1); 
     }
     25% { 
-        transform: scale(0.85, 1.15); 
+        transform: scale(0.8, 1.4); 
     }
     75% { 
-        transform: scale(1.15, 0.85); 
+        transform: scale(1.4, 0.8); 
     }
 }
 
