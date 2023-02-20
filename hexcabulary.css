@@ -11,6 +11,21 @@
     -webkit-user-select: none; /*Safari*/
     -moz-user-select: none; /*Firefox*/
 }
+
+dialog {
+    margin: 1rem;
+    padding: .5rem;
+    float: right;
+    width: 30%;
+    border: 4px black solid;
+    background-color: #fff;
+    display: grid;
+    place-items: center;
+    border-radius: 1em;
+    font-size: 1em;
+    opacity: 0.8;
+}
+
 .paused .click-zone,
 .paused .cell,
 .paused {

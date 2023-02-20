@@ -19,11 +19,12 @@
             <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="#">upgrade your browser</a> to improve your experience.</p>
         <![endif]-->
 
-    <div id="myGame">Attemping to load hexcabulary module...</div>
+    <div id="myGame">Attempting to load Hexcabulary module...</div>
     <script type="module">
         import Hexcabulary from './hexcabulary.js'; // no useful error handling can help notify if this fails (make sure the request succeeds)
         const $boardData = {
             gameType: 'single-random', // optional (default is null)
+            difficulty: 1,
             columns: 8, rows: 8,
             words: [
                 {
@@ -34,6 +35,18 @@
                 },
                 {
                     word: 'BLUE',
+                },
+                {
+                    word: 'PURPLE',
+                },
+                {
+                    word: 'ORANGE',
+                },
+                {
+                    word: 'YELLOW',
+                },
+                {
+                    word: 'BURLYWOOD', // This is an example of an error (7 columns too short for 8 characters in word)
                 }
             ]
         };
@@ -59,7 +72,12 @@
             el.style.display = (!location.hash.match(/#edit-mode/)) ? '' : 'none';
         })
         setTimeout(() => {
-            dispatchEvent(new HashChangeEvent("hashchange"))
+            // enable the edit link, UNLESS...
+            // if an error prevented the board from appearing, we can't edit
+            let el = document.querySelector('[data-id="cell-1,1"]');
+            if (el) {
+                dispatchEvent(new HashChangeEvent("hashchange"))
+            }
         }, 1000);
     </script>
 

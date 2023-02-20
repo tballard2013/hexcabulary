@@ -19,6 +19,11 @@ export default class Hexcabulary {
         this.gameType = data.gameType || 'default';
     
         generateCSSClasses(this.size, this.unit);
+
+        if (this.gameType === 'single-random') {
+            this.pickAndHideWord(this);
+        }
+
         drawBoard(this);
         this.el.appendChild(addMenu(this));
     }
@@ -42,6 +47,71 @@ export default class Hexcabulary {
         if (this.editButton) {
             this.editButton.classList.remove('edit-mode');
         }
+    }
+
+    pickAndHideWord(that) {
+        // figure out the word and hide strategy before drawing the board
+
+        // pick a random word from the list
+        const words = [...that.gameData.words];
+        const rnd = Math.floor(Math.random() * words.length);
+        let _words = [words[rnd]];
+        let _word = _words[0].word; 
+
+        // find the first non-vowel in the word
+        // start letter hunt from the back of the string
+        let guardLetter = _word.split('').reverse().join('').match(/[BCDFGHJKLMNPQRSTVWXZ]/)[0]; 
+        that.gameData.guardLetter = guardLetter;
+
+        // hide it using an algorithm
+        // first letter...
+        let columns = that.gameData.columns;
+        let len = _word.length;
+        let wx = Math.floor(Math.random() * columns) + 1;
+        let wy = Math.floor(Math.random() * that.gameData.rows) + 1;
+        let xx = 0, yy = 0;
+        let direction = Math.floor(Math.random() * 6);
+
+        // difficulty 1 - linear (left or right only), no boundary-cross
+        if (that.gameData.difficulty === 1) {
+            // error case: the word can't be longer than the cols or rows available
+            // this shouldn't happen in the edit builder, but a manual code change could introduce it.
+            if (len > columns) {
+                this.messageUser(`
+                    The word "${_word}" is longer than the ${columns} columns/spaces available for hiding it.
+                    <br><br>This puzzle's author might need to fix (i.e. shorten words or add columns). 
+                `, this.el, 'error');
+            }
+
+            // left or right
+            if (direction >= 3) {
+                xx = -1;
+                if (wx - len < 1) wx = len;
+            }
+            else {
+                xx = 1;
+                if (wx + len > columns) wx = (columns - len === 0 ? 1 : columns - len);
+            }
+        }
+
+        _words[0].coords = [];
+        let word = _words[0].word;
+        word.split('').forEach(letter => {
+            const name = `cell-${wx},${wy}`;
+            _words[0].coords.push(name);
+            that.gameData[name] = {letter: letter};
+            wx += xx; 
+            if (wx > that.gameData.columns) { wx = 1; }
+            else if (wx < 1) { wx = that.gameData.rows; }
+            wy += yy; 
+            if (wy > that.gameData.rows) { wy = 1; }
+            else if (wy < 1) { wy = that.gameData.columns; }
+        })
+
+        that.gameData.allWords = [...that.gameData.words];
+        that.gameData.words = [..._words];
+
+        // TODO: revisit and make non-mutating (?)
     }
 
     handleClick(ev) {
@@ -282,6 +352,28 @@ ${this.dataToUri(this.gameData)}
         setTimeout(() => {
             el.classList.remove('hint');
         }, 1000);
+    }
+
+    messageUser(message, _el) {
+        this.isPlaying = false;
+        const el = document.createElement('dialog');
+        el.style = 'visibility:visible;'
+        el.innerHTML = `
+            ${message}
+            <form method="dialog">
+            <div style="padding-top: 1rem; font-size: .8rem;">
+                <button class="animated-button"
+                    onclick="location.reload()"
+                >Try Again</button>
+
+                <button class="animated-button"
+                onclick="location.href='/';"
+                >More Puzzles</button>
+            </form>
+            <div>
+        `;
+        (_el || document.getElementById('wordlist-container')).append(el);
+        throw(el.innerText.trim());
     }
 
     handleWin() {

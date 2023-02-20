@@ -25,8 +25,9 @@ export function drawBoard(that) {
             x += xx;
             let name = `cell-${column},${row}`;
             let cell = that.gameData[name];
-            let letter = (cell && cell.letter) || randomLetter();
-            if (letter == '*') letter = randomLetter();
+            let guardLetter = that.gameData.guardLetter || '';
+            let letter = (cell && cell.letter) || randomLetter(guardLetter);
+            if (letter == '*') letter = randomLetter(guardLetter);
 
             // support empty cells (',') and holes ('.') in the board 
             let isClickable = (letter !== ',' && letter !== '.');
@@ -93,27 +94,23 @@ export function drawBoard(that) {
             // instead, we discover these during board draw, and use when clearing cells
             if (that.gameData.words) {
                 that.gameData.words.forEach(word => {
-                    if (that.gameType !== 'single-random') {
-                        word.coords.forEach(coord => {
-                            if (that.gameDataExtraInfo[coord] === undefined) {
-                                that.gameDataExtraInfo[coord] = {};
-                            }
+                    word.coords.forEach(coord => {
+                        if (that.gameDataExtraInfo[coord] === undefined) {
+                            that.gameDataExtraInfo[coord] = {};
+                        }
 
-                            // if (that.gameData[coord].usedBy === undefined) {
-                            if (that.gameDataExtraInfo[coord].usedBy === undefined) {
-                                that.gameDataExtraInfo[coord].usedBy = [];
-                            }
-                            that.gameDataExtraInfo[coord].usedBy.push(word.word);
-                        })
-                    }
-
+                        // if (that.gameData[coord].usedBy === undefined) {
+                        if (that.gameDataExtraInfo[coord].usedBy === undefined) {
+                            that.gameDataExtraInfo[coord].usedBy = [];
+                        }
+                        that.gameDataExtraInfo[coord].usedBy.push(word.word);
+                    })
                 })
                 that.gameData.hasCalculatedCellUsageCounts = true;
             } else {
                 // edit-mode, creating a new board
                 console.log('No gameData.words found');
             }
-
         }
     }
 }
