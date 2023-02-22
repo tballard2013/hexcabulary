@@ -3,6 +3,7 @@ import { addMenu } from './hex-library/add-menu.js';
 import { generateCSSClasses } from './hex-library/generate-css-classes.js';
 import { drawBoard } from './hex-library/draw-board.js';
 import { buildWordListHTML, buildWordsHTML } from "/hex-library/draw-wordlist.js";
+import { showLetterHint } from '/hex-library/show-letter-hint.js';
 import {log} from './hex-library/log.js';
 
 export default class Hexcabulary {
@@ -270,7 +271,7 @@ ${this.dataToUri(this.gameData)}
                 }
 
                 if (action && action.match(/wordlist/)) {
-                    return this.showLetterHint(action); 
+                    return showLetterHint(action, this); 
                 }
 
                 if (!this.isPlaying) {
@@ -332,26 +333,6 @@ ${this.dataToUri(this.gameData)}
 
         }
 
-    }
-
-    showLetterHint(search) {
-        // find the word in the data store
-        // pick a letter in the word
-        // flash the cell where the letter is briefly
-        // reduce the score by the cost of the hint (or add the penalty)
-       
-        const _word = search.replace(/wordlist-/, ''); // pull "wordlist-" off the front.
-        const letter = _word.charAt(Math.random() * _word.length);
-        const letterIndex = Math.floor(Math.random() * _word.length);
-        const data = this.gameData.words.filter(word => word.word == _word);
-        const cell = data[0].coords[letterIndex];
-        const el = document.querySelector(`[data-id="${cell}"]`).parentNode;
-        
-        el.classList.add('hint');
-        
-        setTimeout(() => {
-            el.classList.remove('hint');
-        }, 1000);
     }
 
     messageUser(message, _el) {

@@ -13,7 +13,7 @@ export function generateCSSClasses(size, unit) {
         }
         .clicked {
             color: #fff;
-            background-image: ${svg("rgb(0,0,0)")};
+            background-image: ${svg("rgb(0,0,0)")} !important;
         }
         .sharedLetterClicked {
             color: #CCC;
@@ -38,6 +38,12 @@ export function generateCSSClasses(size, unit) {
         .wordlist a {
             text-decoration: none;
             color: #006;
+        }
+        .letter-from-word {
+            background-image: ${svg("rgb(220,200,220)")};
+        }
+        .hint-background {
+            background-image: ${svg("rgb(210,220,210)")};
         }
     `;
     document.getElementsByTagName('head')[0].appendChild(style);
