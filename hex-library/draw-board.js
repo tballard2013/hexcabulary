@@ -82,7 +82,6 @@ export function drawBoard(that) {
     // } else {
     that.play();
     // }
-
     calculateCellReuse();
 
     function calculateCellReuse() {
@@ -104,6 +103,11 @@ export function drawBoard(that) {
                             that.gameDataExtraInfo[coord].usedBy = [];
                         }
                         that.gameDataExtraInfo[coord].usedBy.push(word.word);
+
+                        if (that.debug) {
+                            let el = document.getElementById(coord);
+                            el.classList.add('letter-from-word');
+                        }
                     })
                 })
                 that.gameData.hasCalculatedCellUsageCounts = true;

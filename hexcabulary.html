@@ -19,39 +19,100 @@
             <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="#">upgrade your browser</a> to improve your experience.</p>
         <![endif]-->
 
+    <div class="main-menu" ondblclick="this.classList.toggle('main-menu-toggled')"
+    title="double-click to un/hide"
+    >
+        <form onchange="
+            window.newGame();
+        ">
+        <div>
+            Difficulty level: 
+            <select name="difficulty" 
+                onchange="_set(this)">
+                <option>1</option>
+                <option>2</option>
+            </select>
+        </div>
+        <div>
+            Debug Mode:
+            <input type="checkbox" name="debug" onchange="_set(this)">
+        </div>
+        <div id="editor">
+            <a id="edit-mode-button" href="#edit-mode">Enable Edit Mode</a>
+        </div>
+        <script>
+            _set = (o) => {
+                if (o.checked !== undefined) {
+                    if (!o.checked) {
+                        localStorage.removeItem(o.name)
+                    } else {
+                        localStorage.setItem(o.name, true)
+                    }
+                } else {
+                    localStorage.setItem(o.name, o.value)
+                }
+            }
+
+            // set the initial form values from localStorage (if we have overrides)
+            ['difficulty', 'debug'].forEach(name => {
+                let v = localStorage.getItem(name);
+                let el = document.querySelector(`[name="${name}"]`);
+                if (v) {
+                    switch(el.type) {
+                        case 'checkbox':
+                            el.checked = v;
+                            break;
+                        default:
+                            el.value = v;
+                    }
+                }
+            })
+        </script>
+        </form>
+    </div>
+
     <div id="myGame">Attempting to load Hexcabulary module...</div>
     <script type="module">
         import Hexcabulary from './hexcabulary.js'; // no useful error handling can help notify if this fails (make sure the request succeeds)
-        const $boardData = {
-            gameType: 'single-random', // optional (default is null)
-            difficulty: 1,
-            columns: 8, rows: 8,
-            words: [
-                {
-                    word: 'RED',
-                },
-                {
-                    word: 'GREEN',
-                },
-                {
-                    word: 'BLUE',
-                },
-                {
-                    word: 'PURPLE',
-                },
-                {
-                    word: 'ORANGE',
-                },
-                {
-                    word: 'YELLOW',
-                },
-                {
-                    word: 'BURLYWOOD', // This is an example of an error (7 columns too short for 8 characters in word)
-                }
-            ]
-        };
         const $instance = 'myGame';
-        document[$instance] = new Hexcabulary($instance, $boardData);
+        window.newGame = function() {
+            const debug = document.querySelector('[name="debug"]').checked;
+            const $boardData = {
+                debug: debug,
+                gameType: 'single-random', // optional (default is null)
+                difficulty: document.querySelector('[name="difficulty"]').value,
+                columns: 8, rows: 8,
+                words: [
+                    {
+                        word: 'RED',
+                    },
+                    {
+                        word: 'GREEN',
+                    },
+                    {
+                        word: 'BLUE',
+                    },
+                    {
+                        word: 'PURPLE',
+                    },
+                    {
+                        word: 'ORANGE',
+                    },
+                    {
+                        word: 'YELLOW',
+                    },
+                ]
+            };
+            if (debug) {
+                $boardData.words.push(
+                    {
+                        word: 'BURLYWOOD', // This is an example of an error (7 columns too short for 8 characters in word)
+                    }
+                );
+            }
+            document[$instance] = new Hexcabulary($instance, $boardData);
+        }
+        newGame();
     </script>
 
     <script>

@@ -49,6 +49,20 @@ h2 {
     margin: 0 0 .5em 0;
 }
 
+.main-menu {
+    margin: 0;
+    background: #ddd;
+    position: fixed;
+    bottom: 1em;
+    right: 1em;
+    padding: 1em;
+}
+.main-menu-toggled {
+    width: 2em;
+    height: 2em;
+    opacity: 0.5;
+    overflow: hidden;
+}
 
 @media screen and (min-width: 600px) {
     .wrapper:before {

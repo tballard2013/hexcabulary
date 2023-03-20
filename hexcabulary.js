@@ -8,6 +8,7 @@ import {log} from './hex-library/log.js';
 
 export default class Hexcabulary {
     constructor(myInstanceName, data = {}) {
+        this.debug = data.debug; 
         this.size = 80;
         this.unit = 'px';
         this.el = document.getElementById(myInstanceName); // reference DOM element where to inject the game
@@ -18,6 +19,7 @@ export default class Hexcabulary {
         this.isEditMode = false;
         this.el.style.visibility = 'hidden'; // start hidden
         this.gameType = data.gameType || 'default';
+        this.difficulty = Math.floor(data.difficulty || 1);
     
         generateCSSClasses(this.size, this.unit);
 
@@ -67,14 +69,15 @@ export default class Hexcabulary {
         // hide it using an algorithm
         // first letter...
         let columns = that.gameData.columns;
+        let rows = that.gameData.rows;
         let len = _word.length;
         let wx = Math.floor(Math.random() * columns) + 1;
         let wy = Math.floor(Math.random() * that.gameData.rows) + 1;
         let xx = 0, yy = 0;
-        let direction = Math.floor(Math.random() * 6);
+        let direction = Math.floor(Math.random() * 6) + 1;
 
         // difficulty 1 - linear (left or right only), no boundary-cross
-        if (that.gameData.difficulty === 1) {
+        if (that.difficulty < 3) {
             // error case: the word can't be longer than the cols or rows available
             // this shouldn't happen in the edit builder, but a manual code change could introduce it.
             if (len > columns) {
@@ -84,26 +87,86 @@ export default class Hexcabulary {
                 `, this.el, 'error');
             }
 
-            // left or right
-            if (direction >= 3) {
-                xx = -1;
-                if (wx - len < 1) wx = len;
+            if (that.difficulty === 1) {
+                // hide word horizontally, left or right
+                if (direction >= 3) {
+                    direction = 1;
+                    xx = -1;
+                    if (wx - len < 1) wx = len;
+                }
+                else {
+                    direction = 4;
+                    xx = 1;
+                    if (wx + len > columns) wx = (columns - len === 0 ? 1 : columns - len);
+                }
+            } else if (that.difficulty === 2) {
+                // hide word diagonally or horizontally, but don't cross boundary
+                let owx = wx, owy = wy;
+                switch(direction) {
+                    case 1:
+                        // right, no wrap
+                        xx = -1; yy =0;
+                        if (wx - len < 1) wx = len;
+                        break;
+                    case 2:
+                        // right, down, no wrap
+                        xx = -1;
+                        if (wx - len < 1) wx = len;
+                        yy = -1;
+                        if (wy - len < 1) wy = len;
+                        break;
+                    case 3:
+                        // left, down, no wrap
+                        xx = 1; 
+                        if (wx + len > columns) wx = columns - len;
+                        yy = -1;
+                        if (wy - len < 1) wy = len;
+                        break;
+                    case 4:
+                        xx = 1;
+                        if (wx + len > columns) wx = columns - len + 1;
+                        yy = 0;
+                        break;
+                    case 5:
+                        xx = 1; 
+                        if (wx + len > columns) wx = columns - len + 1;
+                        yy = 1;
+                        if (wy + len > rows) wy = rows - len + 1;
+                        break;
+                    case 6:
+                        xx = -1; 
+                        if (wx - len < 1) wx = len;
+                        yy = 1;
+                        if (wy + len > rows) wy = rows - len + 1;
+                        break;
+                }
             }
-            else {
-                xx = 1;
-                if (wx + len > columns) wx = (columns - len === 0 ? 1 : columns - len);
-            }
+            // console.log(`difficulty: ${that.difficulty}, dir: ${direction}, xx: ${xx}, yy: ${yy}, wx: ${wx}, wy: ${wy}, cols: ${columns}, rows: ${rows}`);
         }
 
         _words[0].coords = [];
         let word = _words[0].word;
-        word.split('').forEach(letter => {
+        word.split('').forEach((letter, i) => {
             const name = `cell-${wx},${wy}`;
+            // console.log(letter, i, name);
             _words[0].coords.push(name);
             that.gameData[name] = {letter: letter};
-            wx += xx; 
-            if (wx > that.gameData.columns) { wx = 1; }
-            else if (wx < 1) { wx = that.gameData.rows; }
+            if (
+                direction === 1
+                || (
+                    (direction === 2 || direction === 6)
+                    && !(wy % 2) /* every other row requires x to increment in the hex layout */
+                )
+                || (
+                    (direction === 3 || direction === 5)
+                    && (wy % 2) /* every other row requires x to increment in the hex layout */
+                )
+                || direction === 4
+            ) {
+                wx += xx; 
+                if (wx > that.gameData.columns) { wx = 1; }
+                else if (wx < 1) { wx = that.gameData.rows; }
+            }
             wy += yy; 
             if (wy > that.gameData.rows) { wy = 1; }
             else if (wy < 1) { wy = that.gameData.columns; }
@@ -192,7 +255,7 @@ ${this.dataToUri(this.gameData)}
 
             // handle game board clicks
             default:
-                console.log(`action is ${action}, isEditMode? ${this.isEditMode}`);
+                // console.log(`action is ${action}, isEditMode? ${this.isEditMode}`);
                 if (this.isEditMode) {
                     let el;
                     if (action && action.match(/wordlist/)) {
@@ -229,7 +292,7 @@ ${this.dataToUri(this.gameData)}
                             this.gameDataExtraInfo.editWord.word += this.gameData[name].letter;
                             this.gameDataExtraInfo.editWord.coords.push(`cell-${column},${row}`);
                         } else {
-                            console.log('this.gameDataExtraInfo=', this.gameDataExtraInfo);
+                            // console.log('this.gameDataExtraInfo=', this.gameDataExtraInfo);
                             if (this.gameDataExtraInfo.editWord !== undefined) {
                                 // if ctrl key is up, and we've been accumulating word data... 
                                 // show the accumulated value, so we can manually copy it to the data list (TODO automate this)
@@ -399,7 +462,7 @@ ${this.dataToUri(this.gameData)}
                 const el = document.getElementById(coord);
 
                 // cells with letters shared by more than one word stick around until the last usage.
-                console.log('this.gameDataExtraInfo=', this.gameDataExtraInfo);
+                // console.log('this.gameDataExtraInfo=', this.gameDataExtraInfo);
                 if (this.gameDataExtraInfo[coord].usedBy.length > 1) {
                     // remove the current word from shared list (reducing the reference count)
                     const arr = this.gameDataExtraInfo[coord].usedBy;
