@@ -77,7 +77,7 @@ export default class Hexcabulary {
         let direction = Math.floor(Math.random() * 6) + 1;
 
         // difficulty 1 - linear (left or right only), no boundary-cross
-        if (that.difficulty < 3) {
+        if (that.difficulty < 4) {
             // error case: the word can't be longer than the cols or rows available
             // this shouldn't happen in the edit builder, but a manual code change could introduce it.
             if (len > columns) {
@@ -99,45 +99,65 @@ export default class Hexcabulary {
                     xx = 1;
                     if (wx + len > columns) wx = (columns - len === 0 ? 1 : columns - len);
                 }
-            } else if (that.difficulty === 2) {
+            } else if (that.difficulty === 2 || that.difficulty === 3) {
                 // hide word diagonally or horizontally, but don't cross boundary
                 let owx = wx, owy = wy;
                 switch(direction) {
                     case 1:
                         // right, no wrap
                         xx = -1; yy =0;
-                        if (wx - len < 1) wx = len;
+                        if (wx - len < 1) {
+                            if (that.difficulty === 2) wx = len;
+                        }
                         break;
                     case 2:
                         // right, down, no wrap
                         xx = -1;
-                        if (wx - len < 1) wx = len;
+                        if (wx - len < 1) {
+                            if (that.difficulty === 2) wx = len;
+                        }
                         yy = -1;
-                        if (wy - len < 1) wy = len;
+                        if (wy - len < 1) {
+                            if (that.difficulty === 2) wy = len;
+                        }
                         break;
                     case 3:
                         // left, down, no wrap
                         xx = 1; 
-                        if (wx + len > columns) wx = columns - len;
+                        if (wx + len > columns) {
+                            if (that.difficulty === 2) wx = columns - len;
+                        }
                         yy = -1;
-                        if (wy - len < 1) wy = len;
+                        if (wy - len < 1) {
+                            if (that.difficulty === 2) wy = len;
+                        }
                         break;
                     case 4:
                         xx = 1;
-                        if (wx + len > columns) wx = columns - len + 1;
+                        if (wx + len > columns) {
+                            if (that.difficulty === 2) wx = columns - len + 1;
+                        }
                         yy = 0;
                         break;
                     case 5:
                         xx = 1; 
-                        if (wx + len > columns) wx = columns - len + 1;
+                        if (wx + len > columns) {
+                            if (that.difficulty === 2) wx = columns - len + 1;
+                        }
                         yy = 1;
-                        if (wy + len > rows) wy = rows - len + 1;
+                        if (wy + len > rows) {
+                            if (that.difficulty === 2) wy = rows - len + 1;
+                        }
                         break;
                     case 6:
                         xx = -1; 
-                        if (wx - len < 1) wx = len;
+                        if (wx - len < 1) {
+                            if (that.difficulty === 2) wx = len;
+                        }
                         yy = 1;
-                        if (wy + len > rows) wy = rows - len + 1;
+                        if (wy + len > rows) {
+                            if (that.difficulty === 2) wy = rows - len + 1;
+                        }
                         break;
                 }
             }

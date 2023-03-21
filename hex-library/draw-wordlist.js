@@ -38,6 +38,12 @@ export function buildWordsHTML(that) {
     }
 
     words.forEach(word => {
+
+        let v = word.word;
+        if (that.difficulty > 1) {
+            if (word.hint) v = word.hint;
+        }
+
         if (!word) {
             html += 'No word?'
         } else {
@@ -47,7 +53,7 @@ export function buildWordsHTML(that) {
                     data-name="wordlist-${word.word}"
                     data-editable="true"
                     onclick="${that.me}.handleClick(event)"
-                >${word.hint || word.word}</a>`
+                >${v}</a>`
         }
     })
 

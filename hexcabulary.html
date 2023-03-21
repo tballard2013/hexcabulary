@@ -19,6 +19,18 @@
             <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="#">upgrade your browser</a> to improve your experience.</p>
         <![endif]-->
 
+    <center>
+        <h1>Introductory Hexcabulary Wordsearch</h1>
+    </center>
+    <div style="width: 500px; margin: auto">
+        Puzzle difficulty: Selectable.
+        Easy (1): Word appears in list. Simple hiding strategy.
+        Medium (2): Hint appears in list (instead of word). Hiding strategy in any available direction.
+        Hard (3): Word can cross the edge of board wrapping to other side.
+        Click the list item for a hint if you need.
+        <a href="/">More puzzles</a>
+    </div>
+
     <div class="main-menu" ondblclick="this.classList.toggle('main-menu-toggled')"
     title="double-click to un/hide"
     >
@@ -31,6 +43,7 @@
                 onchange="_set(this)">
                 <option>1</option>
                 <option>2</option>
+                <option>3</option>
             </select>
         </div>
         <div>
@@ -84,22 +97,32 @@
                 columns: 8, rows: 8,
                 words: [
                     {
+                        word: 'PHOENIX',
+                        hint: 'The capital city of Arizona'
+                    },
+                    {
                         word: 'RED',
+                        hint: 'The color associated with the hexadecimal value of #FF0000'
                     },
                     {
                         word: 'GREEN',
+                        hint: 'The hue associated with the RGB value of 0,255,0'
                     },
                     {
                         word: 'BLUE',
+                        hint: 'The default color assigned to hyper links on a web page'
                     },
                     {
                         word: 'PURPLE',
+                        hint: 'A color associated with royalty'
                     },
                     {
                         word: 'ORANGE',
+                        hint: 'The citrus fruit that came to english through the sanskrit nagrungo'
                     },
                     {
                         word: 'YELLOW',
+                        hint: 'The color associated with the RGBA value of 255,255,0,255'
                     },
                 ]
             };
@@ -142,6 +165,20 @@
         }, 1000);
     </script>
 
+    <!-- Default Statcounter code for hexcabulary
+        https://hexcabulary.netlify.com -->
+    <script type="text/javascript">
+        var sc_project = 12828113;
+        var sc_invisible = 1;
+        var sc_security = "465dbff8"; 
+    </script>
+    <script type="text/javascript" src="https://www.statcounter.com/counter/counter.js" async></script>
+    <noscript>
+        <div class="statcounter"><a title="Web Analytics" href="https://statcounter.com/" target="_blank"><img
+                    class="statcounter" src="https://c.statcounter.com/12828113/0/465dbff8/1/" alt="Web Analytics"
+                    referrerPolicy="no-referrer-when-downgrade"></a></div>
+    </noscript>
+    <!-- End of Statcounter Code -->
 
 </body>
 
