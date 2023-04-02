@@ -52,13 +52,27 @@ export default class Hexcabulary {
         }
     }
 
+    getSetSessionWords(that) {
+        // pick a random word from the list
+        // keep track of words shown, avoid duplicates before whole list has been shown
+        const words = JSON.parse(sessionStorage.getItem('words') || '[]');
+        if (!words.length) {
+            sessionStorage.setItem('words', JSON.stringify(this.gameData.words));
+            return this.getSetSessionWords(that);
+        }
+
+        const rnd = Math.floor(Math.random() * words.length);
+        let word = [words[rnd]];
+        const reducedWords = words.filter(_word => _word.word !== word[0].word)
+        sessionStorage.setItem('words', JSON.stringify(reducedWords));
+
+        return word;
+    }
+
     pickAndHideWord(that) {
         // figure out the word and hide strategy before drawing the board
 
-        // pick a random word from the list
-        const words = [...that.gameData.words];
-        const rnd = Math.floor(Math.random() * words.length);
-        let _words = [words[rnd]];
+        let _words = this.getSetSessionWords(that);
         let _word = _words[0].word; 
 
         // find the first non-vowel in the word

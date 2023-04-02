@@ -21,7 +21,7 @@ export function generateCSSClasses(size, unit) {
         }
         .wordlist {
             margin: 1rem;
-            padding: .5rem;
+            padding: .5rem 1.5rem;
             float: right;
             width: 30%;
             border: 4px black solid;
