@@ -4,6 +4,7 @@ body {
     font-family: sans-serif;
 }
 
+#myGame { margin: 1em; text-align: center; }
 /* 
     Allow background-image translucency based on example here:
         https://www.digitalocean.com/community/tutorials/how-to-change-a-css-background-images-opacity
